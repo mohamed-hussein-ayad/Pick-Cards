@@ -1,20 +1,23 @@
-export default function Places({ title, places, fallbackText, onSelectPlace }) {
-  return (
-    <section className="places-category">
-      <h2>{title}</h2>
-      {places.length === 0 && <p className='fallback-text'>{fallbackText}</p>}
-      {places.length > 0 && (
-        <ul className="places">
-          {places.map((place) => (
-            <li key={place.id} className="place-item">
-              <button onClick={() => onSelectPlace(place.id)}>
-                <img src={place.image.src} alt={place.image.alt} />
-                <h3>{place.title}</h3>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
+import { useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
+
+function Modal({ open, children, onClose }) {
+  const dialog = useRef();
+
+  useEffect(() => {
+    if (open) {
+      dialog.current.showModal();
+    } else {
+      dialog.current.close();
+    }
+  }, [open]);
+
+  return createPortal(
+    <dialog className="modal" ref={dialog} onClose={onClose}>
+      {open ? children : null}
+    </dialog>,
+    document.getElementById("modal")
   );
 }
+
+export default Modal;
